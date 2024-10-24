@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduDigital - Revolutionary School Digitalization</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #4F46E5, 0 0 10px #4F46E5, 0 0 15px #4F46E5; }
+            50% { box-shadow: 0 0 10px #4F46E5, 0 0 20px #4F46E5, 0 0 30px #4F46E5; }
+            100% { box-shadow: 0 0 5px #4F46E5, 0 0 10px #4F46E5, 0 0 15px #4F46E5; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slide-up {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.8s ease-out forwards;
+        }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+        .glowing { animation: glow 2s ease-in-out infinite; }
+        .pulsing { animation: pulse 2s ease-in-out infinite; }
+
+        .cyber-grid {
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(66, 153, 225, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(66, 153, 225, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
+            background-position: 0 0, 10px 10px, 10px 10px;
+        }
+
+        .feature-card {
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.3);
+        }
+
+        .pricing-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(79, 70, 229, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .pricing-card:hover::before {
+            animation: shine 1.5s forwards;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: scale(1.02);
+        }
+
+        .stats-counter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .stats-counter.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tech-orbit {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .orbit-item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            animation: orbit 20s linear infinite;
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+        }
+
+        /* Interactive cursor effect */
+        .cursor-effect {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4F46E5;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .stats-counter {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.stats-counter.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+    <!-- Cursor Effect -->
+    <div class="cursor-effect"></div>
+
+    <!-- Navigation (Enhanced with dropdown) -->
+    <nav class="fixed w-full bg-gray-900 bg-opacity-70 backdrop-blur-xl z-50 border-b border-blue-500/30">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent pulsing">
+                    EduDigital
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <div class="group relative">
+                        <a href="#features" class="hover:text-blue-400 transition">Features</a>
+                        <div class="absolute hidden group-hover:block w-48 bg-gray-800 rounded-lg shadow-lg p-2 mt-2">
+                            <a href="#ai-learning" class="block px-4 py-2 hover:bg-blue-500 rounded-md transition">AI Learning</a>
+                            <a href="#virtual-classroom" class="block px-4 py-2 hover:bg-blue-500 rounded-md transition">Virtual Classroom</a>
+                            <a href="#analytics" class="block px-4 py-2 hover:bg-blue-500 rounded-md transition">Analytics</a>
+                        </div>
+                    </div>
+                    <a href="#pricing" class="hover:text-blue-400 transition">Pricing</a>
+                    <a href="#testimonials" class="hover:text-blue-400 transition">Testimonials</a>
+                    <a href="#contact" class="hover:text-blue-400 transition">Contact</a>
+                </div>
+                <br>
+                <br>
+                <button class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-2 rounded-full hover:scale-105 transition-transform duration-300 glowing">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with 3D Animation -->
+    <section class="relative min-h-screen pt-32 pb-20 px-6 cyber-grid">
+        <div class="container mx-auto text-center relative z-10">
+            <div class="floating">
+                <h1 class="text-7xl font-bold mb-8 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    Revolutionary Education Platform
+                </h1>
+                <p class="text-xl text-blue-200 mb-12 max-w-2xl mx-auto">
+                    Empower your school with AI-driven learning solutions and cutting-edge digital infrastructure.
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <button class="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 rounded-full text-lg transition-all duration-300 hover:scale-105 glowing group">
+                    <span class="group-hover:hidden">Schedule Demo</span>
+                    <span class="hidden group-hover:inline">🚀 Let's Go!</span>
+                </button>
+                <button class="border-2 border-blue-500 hover:border-purple-500 px-8 py-4 rounded-full text-lg transition-all duration-300 hover:scale-105">
+                    Watch Video
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tech Orbit Animation -->
+        <div class="tech-orbit mt-16">
+            <div class="orbit-item bg-blue-500" style="animation-delay: 0s;"></div>
+            <div class="orbit-item bg-purple-500" style="animation-delay: -5s;"></div>
+            <div class="orbit-item bg-pink-500" style="animation-delay: -10s;"></div>
+            <div class="orbit-item bg-indigo-500" style="animation-delay: -15s;"></div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-gray-800/50">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="stats-counter text-center">
+                    <div class="text-4xl font-bold text-blue-400 mb-2">500+</div>
+                    <div class="text-gray-400">Schools Transformed</div>
+                </div>
+                <div class="stats-counter text-center">
+                    <div class="text-4xl font-bold text-purple-400 mb-2">98%</div>
+                    <div class="text-gray-400">Satisfaction Rate</div>
+                </div>
+                <div class="stats-counter text-center">
+                    <div class="text-4xl font-bold text-pink-400 mb-2">1M+</div>
+                    <div class="text-gray-400">Students Impacted</div>
+                </div>
+                <div class="stats-counter text-center">
+                    <div class="text-4xl font-bold text-indigo-400 mb-2">24/7</div>
+                    <div class="text-gray-400">Support Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section (Enhanced) -->
+    <section id="features" class="py-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-blue-900/20 to-gray-900"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Revolutionary Features
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card bg-gray-800/50 p-8 rounded-2xl border border-blue-500/30">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg mb-6 flex items-center justify-center transform hover:rotate-12 transition-transform duration-300">
+                        <i class="fas fa-brain text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">AI-Powered Learning</h3>
+                    <p class="text-blue-200 mb-4">Personalized learning paths adapted to each student's pace and style.</p>
+                    <ul class="text-gray-400 space-y-2">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Smart Content Generation</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Adaptive Assessments</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Progress Tracking</li>
+                    </ul>
+                </div>
+                <!-- More feature cards... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Flexible Pricing Plans
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="pricing-card bg-gray-800/50 p-8 rounded-2xl border border-blue-500/30">
+                    <div class="text-2xl font-bold mb-4">Starter</div>
+                    <div class="text-4xl font-bold mb-8">$499<span class="text-lg">/month</span></div>
+                    <ul class="space-y-4 mb-8">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Basic AI Features</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Up to 500 Students</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Email Support</li>
+                    </ul>
+                    <button class="w-full bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 rounded-full hover:scale-105 transition-transform duration-300">
+                        Get Started
+                    </button>
+                </div>
+                <!-- More pricing cards... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Carousel -->
+    <section id="testimonials" class="py-20 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Success Stories
+            </h2>
+            <div class="flex overflow-x-hidden" id="testimonialSlider">
+                <div class="testimonial-card bg-gray-800/50 p-8 rounded-2xl border border-blue-500/30 flex-shrink-0 w-full md:w-1/3 mx-2">
+                  <div class="text-xl font-semibold mb-4">John Doe</div>
+                  <p class="text-blue-200 mb-4">"EduDigital transformed our school's learning environment. The AI-powered tools made personalized learning possible for all students."</p>
+                  <div class="text-gray-400">Principal, ABC High School</div>
+              </div>
+              <div class="testimonial-card bg-gray-800/50 p-8 rounded-2xl border border-blue-500/30 flex-shrink-0 w-full md:w-1/3 mx-2">
+                  <div class="text-xl font-semibold mb-4">Jane Smith</div>
+                  <p class="text-blue-200 mb-4">"The analytics provided by EduDigital helped us track student progress more effectively. We’ve seen tremendous improvements in student engagement."</p>
+                  <div class="text-gray-400">Teacher, XYZ Academy</div>
+              </div>
+              <div class="testimonial-card bg-gray-800/50 p-8 rounded-2xl border border-blue-500/30 flex-shrink-0 w-full md:w-1/3 mx-2">
+                  <div class="text-xl font-semibold mb-4">Michael Lee</div>
+                  <p class="text-blue-200 mb-4">"Our teachers love the virtual classroom features! The platform is user-friendly, and the 24/7 support ensures we never miss a beat."</p>
+                  <div class="text-gray-400">Administrator, LMN School District</div>
+              </div>
+          </div>
+          <div class="flex justify-center mt-8">
+              <button id="prevTestimonial" class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-all">
+                  <i class="fas fa-chevron-left text-xl"></i>
+              </button>
+              <button id="nextTestimonial" class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-all ml-4">
+                  <i class="fas fa-chevron-right text-xl"></i>
+              </button>
+          </div>
+      </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-gray-900">
+      <div class="container mx-auto px-6">
+          <h2 class="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Contact Us
+          </h2>
+          <form class="max-w-lg mx-auto">
+              <div class="mb-6">
+                  <label for="name" class="block text-blue-200 mb-2">Full Name</label>
+                  <input type="text" id="name" class="w-full p-4 rounded-lg bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" required>
+              </div>
+              <div class="mb-6">
+                  <label for="email" class="block text-blue-200 mb-2">Email Address</label>
+                  <input type="email" id="email" class="w-full p-4 rounded-lg bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your email" required>
+              </div>
+              <div class="mb-6">
+                  <label for="message" class="block text-blue-200 mb-2">Message</label>
+                  <textarea id="message" class="w-full p-4 rounded-lg bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="6" placeholder="Type your message..." required></textarea>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 rounded-full text-lg hover:scale-105 transition-transform duration-300">
+                  Send Message
+              </button>
+          </form>
+      </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 py-8">
+      <div class="container mx-auto px-6">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+              <p class="text-blue-200 text-sm text-center md:text-left">
+                  &copy; 2024 EduDigital. All Rights Reserved.
+              </p>
+              <div class="flex space-x-6 mt-4 md:mt-0">
+                  <a href="#" class="text-blue-200 hover:text-white">
+                      <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a href="#" class="text-blue-200 hover:text-white">
+                      <i class="fab fa-twitter"></i>
+                  </a>
+                  <a href="#" class="text-blue-200 hover:text-white">
+                      <i class="fab fa-linkedin-in"></i>
+                  </a>
+                  <a href="#" class="text-blue-200 hover:text-white">
+                      <i class="fab fa-instagram"></i>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </footer>
+
+  <!-- JS for Testimonial Slider -->
+  <script>
+      const prevBtn = document.getElementById('prevTestimonial');
+      const nextBtn = document.getElementById('nextTestimonial');
+      const slider = document.getElementById('testimonialSlider');
+
+      let scrollAmount = 0;
+      const scrollStep = 320;
+
+      nextBtn.addEventListener('click', () => {
+          scrollAmount += scrollStep;
+          slider.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+      });
+
+      prevBtn.addEventListener('click', () => {
+          scrollAmount -= scrollStep;
+          slider.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+      });
+  </script>
+
+  <!-- JS for Cursor Effect -->
+  <script>
+      const cursor = document.querySelector('.cursor-effect');
+
+      document.addEventListener('mousemove', (e) => {
+          cursor.style.top = `${e.clientY}px`;
+          cursor.style.left = `${e.clientX}px`;
+      });
+  </script>
+</body>
+</html>
